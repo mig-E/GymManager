@@ -8,11 +8,12 @@
 </head>
 <body>
     <a href="/">Return</a>&nbsp;
-    <a href="classes">Add/remove/edit Class</a>&nbsp;
-    <a href="enrollment">Add or Delete Enrollment</a>&nbsp;
-    <a href="members">Add/Remove/Edit Member</a>&nbsp;
-    <a href="paymentinfo">Add/Remove/Edit Payment Info</a>&nbsp;
-    <a href="trainers">Add/Edit/Delete Trainer</a>
+    <a href="classes">Classes</a>&nbsp;
+    <a href="enrollment">Class Enrollment</a>&nbsp;
+    <a href="members">Members</a>&nbsp;
+    <a href="paymentinfo">Payment Info</a>&nbsp;
+    <a href="payments">Payment Schedule</a>&nbsp;
+    <a href="trainers">Trainers</a>
     <br><br>
     <form id="addPaymentInfo" action="/paymentinfo" method="post">
       <div>
@@ -33,19 +34,19 @@
         <button onclick="findEnrollment()">Search</button>
     </form>
     <form id="updatecardinfo">
-    <label for="updateID">Update ID:</label><br>
+    <label for="updateID">Payment Card ID:</label><br>
     <input type="text" id="updateID" name="updateID" disabled><br>
-    <label for="updatemember">Update Member ID:</label><br>
-    <input type="text" id="updatemember" name="updatemember"><br>
-    <label for="updatecard">Update Last name:</label><br>
+    <label for="updatemember">Member ID:</label><br>
+    <input type="text" id="updatemember" name="updatemember" disabled><br>
+    <label for="updatecard">Update Card Number:</label><br>
     <input type="text" id="updatecard" name="updatecard"><br><br>
     <button onclick="updateFunction()" type="submit" id="updatesubmit">Update</button>
     {{!-- <input type="submit" value="Submit"> --}}
     </form><br>
       <table border="1" cellspacing="0" cellpadding="0" width="200">
         <tr><br>
-          <th>Payment_Card_ID</th>
-          <th>Member_ID</th>
+          <th>Payment Card ID</th>
+          <th>Member ID</th>
           <th>Card Number</th>
           <th>Edit</th>
           <th>Delete</th>

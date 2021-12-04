@@ -1,0 +1,49 @@
+    <a href="/">Return</a>&nbsp;
+    <a href="classes">Classes</a>&nbsp;
+    <a href="enrollment">Class Enrollment</a>&nbsp;
+    <a href="members">Members</a>&nbsp;
+    <a href="paymentinfo">Payment Info</a>&nbsp;
+    <a href="payments">Payment Schedule</a>&nbsp;
+    <a href="trainers">Trainers</a>
+    <br><br>
+    <form id="addPaymentInfo" action="/payments" method="post">
+      <div>
+        <label for="member_id">Member ID:</label>
+        <select class="member_id" name="member_id">
+          {{#each member}}
+          <option value={{this.member_id}}>{{this.member_id}} - {{this.f_name}} {{this.l_name}}</option>
+          {{/each}}
+        </select>
+      </div><br>
+        <label for="amount">Amount:</label><br>
+        <input type="text" id="amount" name="amount"><br><br>
+        <label for="billdate">Bill Date:</label><br>
+        <input type="date" id="billdate" name="billdate"><br><br>
+        <button onclick="displayCardNum()">Submit</button>
+      </form>
+      <form id="findenrollment" action="" method="">
+        <label for="enrollmentID">Search by ID:</label><br>
+        <input type="text" id="enrollmentID" name="enrollmentID"><br><br>
+        <button onclick="findEnrollment()">Search</button>
+    </form>
+    <table border="1" cellspacing="0" cellpadding="0" width="200">
+        <tr><br>
+          <th>Payment ID</th>
+          <th>Member ID</th>
+          <th>Amount</th>
+          <th>Bill Date</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        <tr>
+          <!-- display enrollment info -->
+        {{#each data}}
+          <td>{{this.payment_id}}</td>
+          <td>{{this.member_id}}</td>
+          <td>{{this.amount}}</td>
+          <td>{{this.bill_date}}</td>
+          <td><button>Edit</button></td>
+          <td onclick="check({{this.payment_id}})"><button>Delete</button></td>
+        </tr>
+        {{/each}}
+        </table>

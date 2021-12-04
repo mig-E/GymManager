@@ -150,6 +150,16 @@ app.delete('/members', (req, res, next) => {
         console.log("PAYMENT INFO DELETED")
     })
 
+    // DELETES MEMBER FROM PAYMENT SCHEDULE IF THEY EXIST IN TABLE
+    var delPayments = 'DELETE FROM payments WHERE member_id(?)'
+    db.pool.query(delPayments, [req.query.id], (err, rows) => {
+        if(err) {
+            next(err);
+            return;
+        }
+        console.log("MEMBER REMOVED FROM PAYMENT SCHEDULE")
+    })
+
 
     var delQuery = 'DELETE FROM members WHERE member_id=(?);';
     db.pool.query(delQuery, [req.query.id], (err, rows) => {
@@ -215,7 +225,7 @@ app.post('/paymentinfo', (req, res, next) => {
     })
 })
 
-// Update trainer
+// Update payment card
 app.put('/paymentinfo', (req, res, next) => {
     console.log(req.query);
 
@@ -244,6 +254,52 @@ app.delete('/paymentinfo', (req, res, next) => {
     })
 });
 
+
+// Payments/Billing ------------------------------------------------------>
+
+// Get all payment/billing info
+app.get('/payments', (req, res, next) => {
+    var memIDs = 'SELECT * FROM members;'
+    var payQry = 'SELECT * FROM payments;'
+    db.pool.query(memIDs, (err, members) => {
+        if (err) {
+            next(err);
+            return;
+        }
+        db.pool.query(payQry, (err, rows) => {
+            if (err) {
+                next(err);
+                return;
+            }
+            res.render('payments', {member: members, data: rows})
+        })
+    })
+})
+
+// Insert into payment/billing info
+app.post('/payments', (req, res, next) => {
+    let {member_id, amount, billdate} = req.body;
+    var insQ = 'INSERT INTO payments (member_id, amount, bill_date) VALUES (?, ?, ?);'
+    
+    // Date formatting for billdate:
+    var dateStr  = billdate.toString();
+    var billYear = dateStr.slice(0,4)
+    var billMon  = dateStr.slice(5,7)
+    var billDay  = dateStr.slice(8)
+    billdate     = billYear + billMon + billDay
+
+
+    // res.redirect('/')
+
+    db.pool.query(insQ, [member_id, amount, billdate], (err, rows) => {
+        if (err) {
+            next(err);
+            return;
+        }
+        console.log(req.body);
+        res.redirect('/payments')
+    })
+})
 
 
 // Enrollment ------------------------------------------------------------>
