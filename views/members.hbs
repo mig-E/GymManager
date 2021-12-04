@@ -1,0 +1,108 @@
+
+<body>
+  <a href="/">Return</a>&nbsp;
+  <a href="classes">Add/Remove/Edit Class</a>&nbsp;
+  <a href="enrollment">Add or Delete Enrollment</a>&nbsp;
+  <a href="members">Add/Remove/Edit Member</a>&nbsp;
+  <a href="paymentinfo">Add/Remove/Edit Payment Info</a>&nbsp;
+  <a href="trainers">Add/Edit/Delete Trainer</a>
+  <form id="addMembers" action="/members" method="post">
+      <label for="fname">First name:</label><br>
+      <input type="text" id="fname" name="fname"><br>
+      <label for="lname">Last name:</label><br>
+      <input type="text" id="lname" name="lname"><br><br>
+      <label for="trainer_id">Trainer ID(OPTIONAL):</label>
+      <select class="trainer_id" name="trainer_id">
+        {{#each key}}
+        <option value={{this}}>{{this}}</option>
+        {{/each}}
+      </select><br><br>
+      {{!-- <input type="text" id="trainer_id" name="trainer_id"><br>
+      <label for="card_number">Card Number:</label><br>
+      <input type="text" id="card_number" name="card_number"><br>
+      <label for="amount">Amount:</label><br>
+      <input type="text" id="amount" name="amount"><br>
+      <label for="bill_date">Bill Date:</label><br>
+      <input type="date" id="bill_date" name="bill_date"><br><br> --}}
+      <button onclick="return validateInfo()">Submit</button>
+    </form><br>
+    <!-- Search for members -->
+  {{!-- <form>
+    <label for="lnamesearch">Search by last name:</label><br><br>
+    <input type="text" id="lnamesearch"><br>
+    <p>OR</p>
+    <label for="trainersearch">Search by tainer:</label><br>
+    <input type="text" id="trainersearch"><br><br>
+    <button>Search</button>
+  </form><br> --}}
+  <form id="findmember" action="" method="">
+    <label for="memberID">Search by ID:</label><br>
+    <input type="text" id="memberID" name="memberID"><br><br>
+    <button onclick="findMember()">Search</button>
+</form>
+
+    <table border="1" cellspacing="0" cellpadding="0" width="200">
+      <tr><br>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Trainer ID</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {{!-- display members --}}
+
+      {{#each data}}
+            <td>{{this.member_id}}</td>
+            <td>{{this.f_name}}</td>
+            <td>{{this.l_name}}</td>
+            <td>{{this.trainer_id}}</td>
+            {{!-- <td><button><a href="/update/{{this.id}}">Edit</button></td> --}}
+            <td><button>Edit</button></td>
+            <td onclick="check({{this.member_id}})"><button>Delete</button></td>
+          </tr>
+      {{/each}}
+      </table>
+
+{{!-- https://stackoverflow.com/questions/8664486/javascript-code-to-stop-form-submission --}}
+{{!-- used for form validator to prevent  --}}
+
+      <script>
+        function check(id) {
+          baseUrl = '/members' + '?' + `id=${id}`
+
+          fetch(baseUrl,{method: 'DELETE'}).then(response => response.json())
+          .then(json => {
+          
+              console.log('delete' + id);
+          })
+          location.reload();
+        }
+
+        function validateInfo() {
+          const fname = document.getElementById("fname").value
+          const lname = document.getElementById("lname").value
+
+          if (!fname && !lname) {
+            window.alert("MISSING FIRST AND LAST NAME")
+            return false
+          } else if (!fname) {
+            window.alert("MISSING FIRST NAME")
+            return false
+          } else if (!lname) {
+            window.alert("MISSING LAST NAME")
+            return false
+          }
+          return true
+
+        }
+
+
+
+        function findMember() {
+            const memberID = document.getElementById("memberID").value;
+            baseUrl = '/members' + '?' + `search=${memberID}`
+            console.log('searching:' + baseUrl);
+            
+        }
+        </script>

@@ -1,0 +1,122 @@
+  <a href="/">Return</a>&nbsp;
+  <a href="classes">Add/Remove/Edit Class</a>&nbsp;
+  <a href="enrollment">Add or Delete Enrollment</a>&nbsp;
+  <a href="members">Add/Remove/Edit Member</a>&nbsp;
+  <a href="paymentinfo">Add/Remove/Edit Payment Info</a>&nbsp;
+  <a href="trainers">Add/Edit/Delete Trainer</a>
+    <form id="addClass" action="/classes" method="post"> 
+        <label for="class">Class:</label><br>
+        <input type="text" id="class" name="class"><br>
+        <label for="signed_up">Signed Up:</label><br>
+        <input type="text" id="signed_up" name="signed_up"><br>
+        <label for="capcity">Capacity:</label><br>
+        <input type="text" id="capacity" name="capacity"><br><br>
+        <button>Submit</button>
+      </form><br>
+    <!-- Search feature for the classes -->
+    <form id="findclass">
+      <label for="classID">Search for a class:</label><br>
+      <input type="text" id="classID" name="classID"><br><br>
+      <button onclick="classID()">Search</button>
+    </form>
+
+<form id="updateclasses">
+    <label for="updateID">Update ID:</label><br>
+    <input type="text" id="updateID" name="updateID" disabled><br>
+    <label for="updateclassname">Update Class Name:</label><br>
+    <input type="text" id="updateclassname" name="updateclassname"><br>
+    <label for="updatenumsignedup">Update Number Signed Up:</label><br>
+    <input type="text" id="updatenumsignedup" name="updatenumsignedup"><br><br>
+    <label for="updatecapacity">Update Capacity:</label><br>
+    <input type="text" id="updatecapacity" name="updatecapacity"><br><br>
+    <button onclick="updateFunction()" type="submit" id="updatesubmit">Update</button>
+    {{!-- <input type="submit" value="Submit"> --}}
+  </form><br>
+      <table border="1" cellspacing="0" cellpadding="0" width="200">
+        <tr>
+          <th>ID</th>
+          <th>Class</th>
+          <th>Signed Up</th>
+          <th>Capacity</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        <tr>
+        {{#each data}}
+          <td>{{this.class_id}}</td>
+          <td>{{this.class_name}}</td>
+          <td>{{this.capacity}}</td>
+          <td>{{this.num_signed_up}}</td>
+          <td onclick="update({{this.class_id}})"><button>Edit</button></td>
+          <td onclick="check({{this.class_id}})"><button>Delete</button></td>
+        </tr>
+        {{/each}}
+        </table>
+
+        <form><br>
+          <label for="classSize">Class size:</label>
+          <select name="classSize">
+            <option>Less than 10</option>
+            <option>10-20</option>
+            <option>20+</option>
+          </select>
+        </form>
+        <script>
+          document.getElementById('updateclasses').style.visibility = 'hidden';
+          function check(id) {
+            baseUrl = '/classes' + '?' + `id=${id}`
+
+            fetch(baseUrl,{method: 'DELETE'}).then(response => response.json())
+            .then(json => {
+            
+                console.log('delete' + id);
+            })
+            location.reload();
+
+
+        }
+
+        function update(id) {
+            document.getElementById('updateclasses').style.visibility = 'visible';
+            
+            window.alert(id);
+            table_row = document.getElementsByTagName('tr');
+            console.log(table_row);
+
+            for (var i = 0; i < table_row.length; i++){
+                if (id == table_row[i].cells[0].outerText){
+                    console.log(table_row[i]);
+                    console.log(table_row[i].cells[0].outerText)
+                    console.log(table_row[i].cells[1].outerText)
+                    console.log(table_row[i].cells[2].outerText)
+                    document.getElementById('updateID').value = table_row[i].cells[0].outerText;
+                    document.getElementById('updateclassname').value = table_row[i].cells[1].outerText;
+                    document.getElementById('updatenumsignedup').value = table_row[i].cells[2].outerText;
+                    document.getElementById('updatecapacity').value = table_row[i].cells[3].outerText;
+                }
+                
+            }
+        }
+
+
+        function classID() {
+            const classID = document.getElementById("classID").value;
+            baseUrl = '/classes' + '?' + `search=${classID}`
+            console.log('searching:' + baseUrl);
+            
+        }
+
+        function updateFunction() {
+            var updatedID = document.getElementById('updateID').value
+            var updatedclasses = document.getElementById('updateclassname').value 
+            var updatednumsignedup= document.getElementById('updatenumsignedup').value 
+            var updatedcapacity = document.getElementById('updatecapacity').value 
+            baseUrl = '/classes' + '?' + `classID=${updatedID}` +  `&updatedclasses=${updatedclasses}` +  `&updatednumsignedup=${updatednumsignedup}` +  `&updatedcapacity=${updatedcapacity}`
+            fetch(baseUrl,{method: 'PUT'}).then(response => response.json())
+            .then(json => {
+            
+                console.log('hi');
+            })
+            location.reload();
+        }
+        </script>

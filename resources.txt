@@ -1,0 +1,14 @@
+some sources used to doublecheck that i did this right:
+1) week 1 github for node.js
+
+2) https://codingstatus.com/how-to-display-data-from-mysql-database-table-in-node-js/#comments
+
+3) https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files 
+- had to use this to figure out how to display standard html file using express
+
+4) https://www.reddit.com/r/node/comments/nxpwv3/form_data_not_showing_up_in_reqbody/
+- this one saved my butt because i couldn't get form data to send
+
+5) https://github.com/knightsamar/cs340_sample_nodejs_app
+- sample code from wolford's demonstration
+

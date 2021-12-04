@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/">Return</a>&nbsp;
+    <a href="classes">Add/remove/edit Class</a>&nbsp;
+    <a href="enrollment">Add or Delete Enrollment</a>&nbsp;
+    <a href="members">Add/Remove/Edit Member</a>&nbsp;
+    <a href="paymentinfo">Add/Remove/Edit Payment Info</a>&nbsp;
+    <a href="trainers">Add/Edit/Delete Trainer</a>
+    <br><br>
+    <form id="addPaymentInfo" action="/paymentinfo" method="post">
+      <div>
+        <label for="member_id">Member ID:</label>
+        <select class="member_id" name="member_id">
+          {{#each member}}
+          <option value={{this.member_id}}>{{this.member_id}} - {{this.f_name}} {{this.l_name}}</option>
+          {{/each}}
+        </select>
+      </div><br>
+        <label for="cardnumber">Card Number:</label><br>
+        <input type="text" id="cardnumber" name="cardnumber"><br><br>
+        <button onclick="displayCardNum()">Submit</button>
+      </form>
+      <form id="findenrollment" action="" method="">
+        <label for="enrollmentID">Search by ID:</label><br>
+        <input type="text" id="enrollmentID" name="enrollmentID"><br><br>
+        <button onclick="findEnrollment()">Search</button>
+    </form>
+    <form id="updatecardinfo">
+    <label for="updateID">Update ID:</label><br>
+    <input type="text" id="updateID" name="updateID" disabled><br>
+    <label for="updatemember">Update Member ID:</label><br>
+    <input type="text" id="updatemember" name="updatemember"><br>
+    <label for="updatecard">Update Last name:</label><br>
+    <input type="text" id="updatecard" name="updatecard"><br><br>
+    <button onclick="updateFunction()" type="submit" id="updatesubmit">Update</button>
+    {{!-- <input type="submit" value="Submit"> --}}
+    </form><br>
+      <table border="1" cellspacing="0" cellpadding="0" width="200">
+        <tr><br>
+          <th>Payment_Card_ID</th>
+          <th>Member_ID</th>
+          <th>Card Number</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        <tr>
+          <!-- display enrollment info -->
+        {{#each card}}
+          <td>{{this.payment_card_id}}</td>
+          <td>{{this.member_id}}</td>
+          <td>{{this.card_number}}</td>
+          <td onclick="update({{this.payment_card_id}})"><button>Edit</button></td>
+          <td onclick="check({{this.payment_card_id}})"><button>Delete</button></td>
+        </tr>
+        {{/each}}
+        </table>
+        <script>
+          document.getElementById('updatecardinfo').style.visibility = 'hidden';
+        function check(id) {
+        baseUrl = '/paymentinfo' + '?' + `id=${id}`
+
+        fetch(baseUrl,{method: 'DELETE'}).then(response => response.json())
+        .then(json => {
+        
+            console.log('delete' + id);
+        })
+        location.reload();
+        }
+
+        function displayCardNum() {
+            const cardNum = document.getElementById("cardnumber").value
+            window.alert(cardNum)
+        }
+
+        function update(id) {
+            document.getElementById('updatecardinfo').style.visibility = 'visible';
+            
+            window.alert(id);
+            table_row = document.getElementsByTagName('tr');
+            console.log(table_row);
+
+            for (var i = 0; i < table_row.length; i++){
+                if (id == table_row[i].cells[0].outerText){
+                    console.log(table_row[i]);
+                    console.log(table_row[i].cells[0].outerText)
+                    console.log(table_row[i].cells[1].outerText)
+                    console.log(table_row[i].cells[2].outerText)
+                    document.getElementById('updateID').value = table_row[i].cells[0].outerText;
+                    document.getElementById('updatemember').value = table_row[i].cells[1].outerText;
+                    document.getElementById('updatecard').value = table_row[i].cells[2].outerText;
+                }
+                
+            }
+        }
+
+        function findEnrollment() {
+            const enrollmentID = document.getElementById("enrollmentID").value;
+            baseUrl = '/enrollment' + '?' + `search=${enrollmentID}`
+            console.log('searching:' + baseUrl);
+            
+        }
+
+        function updateFunction() {
+            var updatedID = document.getElementById('updateID').value
+            var updatedmember = document.getElementById('updatemember').value 
+            var updatedcard = document.getElementById('updatecard').value 
+            baseUrl = '/paymentinfo' + '?' + `paymentCardID=${updatedID}` +  `&updatedmember=${updatedmember}` +  `&updatedcard=${updatedcard}`
+            fetch(baseUrl,{method: 'PUT'}).then(response => response.json())
+            .then(json => {
+            
+                console.log('hi');
+            })
+            location.reload();
+        }
+        </script>
+</body>
+</html>

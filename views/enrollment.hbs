@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/">Return</a>&nbsp;
+    <a href="classes">Add/remove/edit Class</a>&nbsp;
+    <a href="enrollment">Add or Delete Enrollment</a>&nbsp;
+    <a href="members">Add/Remove/Edit Member</a>&nbsp;
+    <a href="paymentinfo">Add/Remove/Edit Payment Info</a>&nbsp;
+    <a href="trainers">Add/Edit/Delete Trainer</a>
+    <br><br>
+    <form id="addEnrollment" action="/enrollment" method="post">
+      <div>
+        <label for="member_id">Member ID:</label>
+        <select class="member_id" name="member_id">
+          {{#each member}}
+          <option value={{this.member_id}}>{{this.member_id}} - {{this.f_name}} {{this.l_name}}</option>
+          {{/each}}
+        </select>
+      </div><br>
+      <div>
+        <label for="lname">Class ID:</label>
+        <select id="class_id" name="class_id">
+          {{#each class}}
+          <option value={{this.class_id}}>{{this.class_id}} - {{this.class_name}}</option>
+          {{/each}}
+        </select>
+        </div><br>
+        <button>Submit</button>
+      </form>
+      <form id="findenrollment" action="" method="">
+        <label for="enrollmentID">Search by ID:</label><br>
+        <input type="text" id="enrollmentID" name="enrollmentID"><br><br>
+        <button onclick="findEnrollment()">Search</button>
+    </form>
+      <table border="1" cellspacing="0" cellpadding="0" width="200">
+        <tr><br>
+          <th>ID</th>
+          <th>Member_ID</th>
+          <th>Class ID</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        <tr>
+          <!-- display enrollment info -->
+        {{#each data}}
+          <td>{{this.enrollment_id}}</td>
+          <td>{{this.member_id}}</td>
+          <td>{{this.class_id}}</td>
+          <td><button>Edit</button></td>
+          <td onclick="check({{this.enrollment_id}})"><button>Delete</button></td>
+        </tr>
+        {{/each}}
+        </table>
+        <script>
+          function check(id) {
+            baseUrl = '/enrollment' + '?' + `id=${id}`
+
+            fetch(baseUrl,{method: 'DELETE'}).then(response => response.json())
+            .then(json => {
+            
+                console.log('delete' + id);
+            })
+            location.reload();
+
+
+        }
+
+        function findEnrollment() {
+            const enrollmentID = document.getElementById("enrollmentID").value;
+            baseUrl = '/enrollment' + '?' + `search=${enrollmentID}`
+            console.log('searching:' + baseUrl);
+            
+        }
+        </script>
+</body>
+</html>

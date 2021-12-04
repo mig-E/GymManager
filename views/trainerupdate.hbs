@@ -1,0 +1,50 @@
+<a href="/">Return</a>&nbsp;&nbsp;
+<a href="/classes">Add/remove/edit Class</a>&nbsp;&nbsp;
+<a href="/enrollment">Add or Delete Enrollment</a>&nbsp;&nbsp;
+<a href="/members">Add/Remove/Edit Member</a>&nbsp;&nbsp;
+<a href="/trainers">Add/Edit/Delete Trainer</a>
+
+<form id="editTrainer" action="/trainers" method="post">
+    <label for="fname">First name:</label><br>
+    <input type="text" id="fname" name="fname"><br>
+    <label for="lname">Last name:</label><br>
+    <input type="text" id="lname" name="lname"><br><br>
+    <button type="submit" id="update" onclick="updateTrainer({{this.trainer_id}})">Submit</button>
+    {{!-- <input type="submit" value="Submit"> --}}
+    </form><br>
+
+    <table border="1" cellspacing="0" cellpadding="0" width="200">
+    <tr><br>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    <tr>
+    {{!-- display all trainers --}}
+    {{#each data}}
+        <td>{{this.trainer_id}}</td>
+        <td>{{this.f_name}}</td>
+        <td>{{this.l_name}}</td>
+        <td onclick="location.href='/trainerupdate/:{{this.trainer_id}}'"><button>Edit</button></td>
+        <td onclick="check({{this.trainer_id}})"><button>Delete</button></td>
+    </tr>
+    {{/each}}
+    </table>
+    <script>
+        const req = new XMLHttpRequest();
+
+        window.alert("CLOSE THIS WINDOW AND START AGAIN AT INDEX PLZ :(")
+
+        function updateTrainer(id) {
+            const payload = {fname: null, lname: null};
+            payload.fname = document.getElementById('fname');
+            payload.lname = document.getElementById('lname');
+
+            req.open('GET', '/trainerupdate', true);
+            req.setRequestHeader('Content-Type', 'application/json');
+            req.send(JSON.stringify(payload));
+    }
+
+    </script>

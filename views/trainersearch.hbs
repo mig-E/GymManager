@@ -1,0 +1,24 @@
+<a href="/">Return</a>&nbsp;&nbsp;
+<a href="/classes">Add/remove/edit Class</a>&nbsp;&nbsp;
+<a href="/enrollment">Add or Delete Enrollment</a>&nbsp;&nbsp;
+<a href="/members">Add/Remove/Edit Member</a>&nbsp;&nbsp;
+<a href="/trainers">Add/Edit/Delete Trainer</a>
+
+<h1>Here's who we found:</h1>
+
+    <table border="1" cellspacing="0" cellpadding="0" width="200">
+    <tr><br>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+    </tr>
+    <tr>
+    {{!-- display all trainers --}}
+    {{#each data}}
+        <td>{{this.trainer_id}}</td>
+        <td>{{this.f_name}}</td>
+        <td>{{this.l_name}}</td>
+    </tr>
+    {{/each}}
+    </table>
+
