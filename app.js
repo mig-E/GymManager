@@ -46,7 +46,7 @@ app.get('/', function(req, res) {
 });
 
 
-
+// Members ---------------------------------------->
 // Get all members currently stored in the database
 app.get('/members', (req, res, next) => {
 
@@ -92,17 +92,24 @@ app.get('/members', (req, res, next) => {
         // })
     }
 });
+
 //Update into members
 app.put('/members', (req, res, next) => {
     console.log(req.query);
-    console.log('firing');
 
-    var updateClasses = `UPDATE members SET f_name=?, l_name=?, trainer_id=? WHERE member_id=?;`
-    db.pool.query(updateClasses, [req.query.updatedfname, req.query.updatedlname, req.query.updatedtrainer, req.query.memberID], function(err, rows) {
+    var memTrainerID = req.query.memTrainerID // needed to prevent getting a foreign key error when updating member
+
+    if (!memTrainerID) {
+        memTrainerID = null;
+    }
+
+    var updateMembers = `UPDATE members SET f_name=?, l_name=?, trainer_id=? WHERE member_id=?;`
+    db.pool.query(updateMembers, [req.query.memFirstName, req.query.memLastName,  memTrainerID, req.query.memberID], function(err, rows) {
         if (err) {
             next(err);
             return;
         }
+        // console.log(req.query)
         res.redirect('/members');
     })
     
@@ -384,13 +391,9 @@ app.post('/enrollment', (req, res, next) => {
 //Update into enrollment
 app.put('/enrollment', (req, res, next) => {
     console.log(req.query);
-    console.log(req.query.updatedmember)
-    console.log(req.query.updatedclass)
-    console.log(req.query.enrollmentsID)
-    console.log('firing');
     
-    var updateClasses = `UPDATE enrollments SET member_id=?, class_id=? WHERE enrollment_id=?;`
-    db.pool.query(updateClasses, [req.query.updatedmember, req.query.updatedclass, req.query.enrollmentsID], function(err, rows) {
+    var updateClasses = `UPDATE enrollments SET class_id=? WHERE enrollment_id=?;`
+    db.pool.query(updateClasses, [req.query.classID, req.query.enrollmentID], function(err, rows) {
         if (err) {
             next(err);
             return;
@@ -399,6 +402,8 @@ app.put('/enrollment', (req, res, next) => {
     })
     
 });
+
+// Trainers ------------------------------------------------------------->
 
 // Insert into trainers
 app.post('/trainers', (req, res, next) => {
@@ -471,69 +476,18 @@ app.delete('/trainers', (req, res, next) => {
 
 // Update trainer
 // Get the information for the update
-app.get('/trainerupdate/:id', (req, res) => {
-    const trainerId = req.params.id;
-    var getQry = `SELECT * FROM trainers WHERE trainer_id=${trainerId}`
-    db.pool.query(getQry, function(err, rows, fields) {
-        if (err) {
-            next(err);
-            return;
-        }
-        console.log("HERE WE ARE")
-        res.render(`trainers`, {data: rows})
-    }) 
-    });
-
-/* Conduct the update
- (Had to sample my code from 290 to get this working on front end) - lugomi
- */
-// app.put('/trainerupdate/:id', (req, res, next) => {
-//     const context = {};
-//     const trainerId = req.query.id;
-//     const {fname, lname} = req.query;
-//     const updateTrainer = `UPDATE trainers SET f_name=?, l_name=? WHERE trainer_id=?;`
-//     db.pool.query(updateTrainer, [fname, lname, trainerId], function(err, rows) {
+// app.get('/trainerupdate/:id', (req, res) => {
+//     const trainerId = req.params.id;
+//     var getQry = `SELECT * FROM trainers WHERE trainer_id=${trainerId}`
+//     db.pool.query(getQry, function(err, rows, fields) {
 //         if (err) {
 //             next(err);
 //             return;
 //         }
-//         res.redirect('/trainers')
-//     })
-// })
-
-/* 
-Should be the search by last name for trainers. Cannot currently get it work with last 
-name so going to have to do it with trainer_id for now.
-*/
-
-// app.get('/trainersearch/:lname', (req, res, next) => {
-//     const lname = req.params.lname;
-//     const getQry = `SELECT * FROM trainers WHERE l_name=${lname}`
-//     db.pool.query(getQry, function(err, rows, fields) {
-//         if (err) {
-//             next(err)
-//             return;
-//         }
-//         console.log(`SEARCHING FOR: ${lname}`)
-//         res.render('trainersearch', {data: rows})
-//     })
-
-// })
-
-
-// Search by ID
-app.get('/trainersearch/:id', (req, res, next) => {
-    const trainerId = req.params.id;
-    var getQry = `SELECT * FROM trainers WHERE trainer_id=${trainerId}`
-    db.pool.query(getQry, function(err, rows, fields) {
-        if (err) {
-            next(err);
-            return;
-        }
-        console.log("HERE WE ARE")
-        res.render(`trainersearch/${trainerId}`, {data: rows})
-    }) 
-    });
+//         console.log("HERE WE ARE")
+//         res.render(`trainers`, {data: rows})
+//     }) 
+//     });
 
 // Classes ------------------------------------------------------------>
 
@@ -562,7 +516,7 @@ app.get('/classes', (req, res, next) => {
 }
 })
 
-//Post class
+// Insert into classes
 app.post('/classes', (req, res, next) => {
     console.log(req.body);
     // const {class, signed_up, capacity} = req.body;
@@ -580,7 +534,7 @@ app.post('/classes', (req, res, next) => {
 });
 
 
-//Insert into classes
+// Update classes
 app.put('/classes', (req, res, next) => {
     console.log(req.query);
 

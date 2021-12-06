@@ -13,16 +13,9 @@
         <label for="capcity">Capacity:</label><br>
         <input type="text" id="capacity" name="capacity"><br><br>
         <button>Submit</button>
-      </form><br>
-    <!-- Search feature for the classes -->
-    <form id="findclass">
-      <label for="classID">Search for a class:</label><br>
-      <input type="text" id="classID" name="classID"><br><br>
-      <button onclick="classID()">Search</button>
-    </form>
-
+    </form><br>
 <form id="updateclasses">
-    <label for="updateID">Update ID:</label><br>
+    <label for="updateID">Class ID:</label><br>
     <input type="text" id="updateID" name="updateID" disabled><br>
     <label for="updateclassname">Update Class Name:</label><br>
     <input type="text" id="updateclassname" name="updateclassname"><br>
@@ -53,15 +46,6 @@
         </tr>
         {{/each}}
         </table>
-
-        <form><br>
-          <label for="classSize">Class size:</label>
-          <select name="classSize">
-            <option>Less than 10</option>
-            <option>10-20</option>
-            <option>20+</option>
-          </select>
-        </form>
         <script>
           document.getElementById('updateclasses').style.visibility = 'hidden';
           function check(id) {

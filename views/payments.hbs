@@ -46,4 +46,11 @@
           <td onclick="check({{this.payment_id}})"><button>Delete</button></td>
         </tr>
         {{/each}}
-        </table>
+    </table>
+    <script>
+      function displayCardNum() {
+        window.alert('we in dis bit')
+        billingday = document.getElementById('billdate').value
+        window.alert(`${billingday}`)
+      }
+    </script>

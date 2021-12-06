@@ -13,10 +13,14 @@
     <button type="submit" id="submit">Submit</button>
     {{!-- <input type="submit" value="Submit"> --}}
     </form><br>
-    <!-- Search for trainer by ID -->
+<!-- Search for trainer by ID -->
 <form id="findtrainer" action="" method="">
-    <label for="trainerID">Search by ID:</label><br>
-    <input type="text" id="trainerID" name="trainerID"><br><br>
+    <label for="trainerID">Search by ID:</label>
+    <select class="trainerID" name="trainerID">
+      {{#each data}}
+      <option value={{this.trainer_id}}>{{this.trainer_id}} - {{this.f_name}} {{this.l_name}}</option>
+      {{/each}}
+    </select>
     <button onclick="findTrainer()">Search</button>
 </form>
 

@@ -25,7 +25,7 @@
         </select>
       </div><br>
       <div>
-        <label for="lname">Class ID:</label>
+        <label for="class_id">Class ID:</label>
         <select id="class_id" name="class_id">
           {{#each class}}
           <option value={{this.class_id}}>{{this.class_id}} - {{this.class_name}}</option>
@@ -33,16 +33,24 @@
         </select>
         </div><br>
         <button>Submit</button>
+      </form><br>
+      <form id="updateEnrollment">
+        <label for="enrollmentID">Enrollment ID:</label><br>
+        <input type="text" id="enrollmentID" name="enrollmentID" disabled><br>
+        <label for="memberID">Member ID:</label><br>
+        <input type="text" id="memberID" name="memberID" disabled><br><br>
+        <label for="classID">Class ID:</label>
+          <select id="classID" name="classID">
+          {{#each class}}
+          <option value={{this.class_id}}>{{this.class_id}} - {{this.class_name}}</option>
+          {{/each}}
+        </select><br><br>
+        <button onclick="updateEnrollment()" type="submit" id="updatesubmit">Update</button> 
       </form>
-      <form id="findenrollment" action="" method="">
-        <label for="enrollmentID">Search by ID:</label><br>
-        <input type="text" id="enrollmentID" name="enrollmentID"><br><br>
-        <button onclick="findEnrollment()">Search</button>
-    </form>
       <table border="1" cellspacing="0" cellpadding="0" width="200">
         <tr><br>
           <th>ID</th>
-          <th>Member_ID</th>
+          <th>Member ID</th>
           <th>Class ID</th>
           <th>Edit</th>
           <th>Delete</th>
@@ -53,12 +61,14 @@
           <td>{{this.enrollment_id}}</td>
           <td>{{this.member_id}}</td>
           <td>{{this.class_id}}</td>
-          <td><button>Edit</button></td>
+          <td><button onclick="update({{this.enrollment_id}})">Edit</button></td>
           <td onclick="check({{this.enrollment_id}})"><button>Delete</button></td>
         </tr>
         {{/each}}
         </table>
         <script>
+          document.getElementById('updateEnrollment').style.visibility = 'hidden';
+
           function check(id) {
             baseUrl = '/enrollment' + '?' + `id=${id}`
 
@@ -72,10 +82,39 @@
 
         }
 
-        function findEnrollment() {
-            const enrollmentID = document.getElementById("enrollmentID").value;
-            baseUrl = '/enrollment' + '?' + `search=${enrollmentID}`
-            console.log('searching:' + baseUrl);
+          function update(id) {
+              document.getElementById('updateEnrollment').style.visibility = 'visible';
+              
+              window.alert(id);
+              table_row = document.getElementsByTagName('tr');
+              console.log(table_row);
+
+              for (var i = 0; i < table_row.length; i++){
+                  if (id == table_row[i].cells[0].outerText){
+                      console.log(table_row[i]);
+                      console.log(table_row[i].cells[0].outerText)
+                      console.log(table_row[i].cells[1].outerText)
+                      console.log(table_row[i].cells[2].outerText)
+                      document.getElementById('enrollmentID').value = table_row[i].cells[0].outerText;
+                      document.getElementById('memberID').value = table_row[i].cells[1].outerText;
+                      document.getElementById('classID').value = table_row[i].cells[2].outerText;
+                  }
+                  
+              }
+          }
+
+
+        function updateEnrollment() {
+            var enrollmentID = document.getElementById('enrollmentID').value
+            var memberID     = document.getElementById('memberID').value
+            var classID      = document.getElementById('classID').value
+            baseUrl = '/enrollment' + '?' + `enrollmentID=${enrollmentID}` + `&classID=${classID}`
+            fetch(baseUrl,{method: 'PUT'}).then(response => response.json())
+            .then(json => {
+              console.log('updating enrollment info')
+            })
+            location.reload();
+            window.alert("UPDATED!")
             
         }
         </script>

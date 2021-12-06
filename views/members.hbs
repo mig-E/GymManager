@@ -8,9 +8,9 @@
   <a href="payments">Payment Schedule</a>&nbsp;
   <a href="trainers">Trainers</a>
   <form id="addMembers" action="/members" method="post">
-      <label for="fname">First name:</label><br>
+      <label for="fname">First Name:</label><br>
       <input type="text" id="fname" name="fname"><br>
-      <label for="lname">Last name:</label><br>
+      <label for="lname">Last Name:</label><br>
       <input type="text" id="lname" name="lname"><br><br>
       <label for="trainer_id">Trainer ID(OPTIONAL):</label>
       <select class="trainer_id" name="trainer_id">
@@ -18,29 +18,32 @@
         <option value={{this}}>{{this}}</option>
         {{/each}}
       </select><br><br>
-      {{!-- <input type="text" id="trainer_id" name="trainer_id"><br>
-      <label for="card_number">Card Number:</label><br>
-      <input type="text" id="card_number" name="card_number"><br>
-      <label for="amount">Amount:</label><br>
-      <input type="text" id="amount" name="amount"><br>
-      <label for="bill_date">Bill Date:</label><br>
-      <input type="date" id="bill_date" name="bill_date"><br><br> --}}
       <button onclick="return validateInfo()">Submit</button>
     </form><br>
-    <!-- Search for members -->
-  {{!-- <form>
-    <label for="lnamesearch">Search by last name:</label><br><br>
-    <input type="text" id="lnamesearch"><br>
-    <p>OR</p>
-    <label for="trainersearch">Search by tainer:</label><br>
-    <input type="text" id="trainersearch"><br><br>
-    <button>Search</button>
-  </form><br> --}}
   <form id="findmember" action="" method="">
-    <label for="memberID">Search by ID:</label><br>
-    <input type="text" id="memberID" name="memberID"><br><br>
+    <label for="memberID">Search by ID:</label>
+    <select class="memberID" name="memberID">
+      {{#each data}}
+      <option value={{this.member_id}}>{{this.member_id}} - {{this.f_name}} {{this.l_name}}</option>
+      {{/each}}
+    </select>
     <button onclick="findMember()">Search</button>
-</form>
+  </form><br>
+  <form id="updateMember">
+    <label for="memberID">Member ID:</label><br>
+    <input type="text" id="memberID" name="memberID" disabled><br>
+    <label for="memberFirstName">First Name:</label><br>
+    <input type="text" id="memberFirstName" name="memberFirstName"><br>
+    <label for="memberLastName">Last Name:</label><br>
+    <input type="text" id="memberLastName" name="memberLastName"><br><br>
+    <label for="memTrainerID">Trainer ID:</label>
+    <select class="memTrainerID" name="memTrainerID" id="memTrainerID">
+    {{#each key}}
+    <option value={{this}}>{{this}}</option>
+    {{/each}}
+    </select><br><br>
+    <button onclick="updateFunction()" type="submit" id="updatesubmit">Update</button>    
+  </form>
 
     <table border="1" cellspacing="0" cellpadding="0" width="200">
       <tr><br>
@@ -58,8 +61,7 @@
             <td>{{this.f_name}}</td>
             <td>{{this.l_name}}</td>
             <td>{{this.trainer_id}}</td>
-            {{!-- <td><button><a href="/update/{{this.id}}">Edit</button></td> --}}
-            <td><button>Edit</button></td>
+            <td onclick="update({{this.member_id}})"><button>Edit</button></td>
             <td onclick="check({{this.member_id}})"><button>Delete</button></td>
           </tr>
       {{/each}}
@@ -69,6 +71,8 @@
 {{!-- used for form validator to prevent  --}}
 
       <script>
+        document.getElementById('updateMember').style.visibility = 'hidden';
+
         function check(id) {
           baseUrl = '/members' + '?' + `id=${id}`
 
@@ -98,6 +102,46 @@
 
         }
 
+        function update(id) {
+            document.getElementById('updateMember').style.visibility = 'visible';
+            
+            window.alert('PREPARING UPDATE');
+            table_row = document.getElementsByTagName('tr');
+            console.log(table_row);
+
+            for (var i = 0; i < table_row.length; i++){
+                if (id == table_row[i].cells[0].outerText){
+                    console.log(table_row[i]);
+                    console.log(table_row[i].cells[0].outerText)
+                    console.log(table_row[i].cells[1].outerText)
+                    console.log(table_row[i].cells[2].outerText)
+                    document.getElementById('memberID').value = table_row[i].cells[0].outerText;
+                    document.getElementById('memberFirstName').value = table_row[i].cells[1].outerText;
+                    document.getElementById('memberLastName').value = table_row[i].cells[2].outerText;
+                    document.getElementById('memTrainerID').value = table_row[i].cells[3].outerText;
+                }
+                
+            }
+        }
+
+
+        function updateFunction() {
+            var memberID = document.getElementById('memberID').value
+            var memFirstName = document.getElementById('memberFirstName').value
+            var memLastName  = document.getElementById('memberLastName').value
+            var memTrainerID = document.getElementById('memTrainerID').value
+
+            window.alert(`${memFirstName} ${memLastName} has Trainer: ${memTrainerID}`)
+            baseUrl = '/members' + '?' + `memberID=${memberID}` + `&memFirstName=${memFirstName}` + `&memLastName=${memFirstName}` + `&memTrainerID=${memTrainerID}`
+            fetch(baseUrl,{method: 'PUT'}).then(response => response.json())
+            .then(json => {
+            
+                console.log('hi');
+            })
+            location.reload();
+
+
+        }
 
 
         function findMember() {
